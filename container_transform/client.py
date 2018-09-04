@@ -1,5 +1,5 @@
 import click
-
+import json
 from .converter import Converter
 from .schema import InputTransformationTypes, OutputTransformationTypes
 from .version import __version__
@@ -62,6 +62,12 @@ def transform(input_file, input_type, output_type, verbose, quiet):
     """
     converter = Converter(input_file, input_type, output_type)
     output = converter.convert(verbose)
+
+    if output_type == 'ecs':
+        out = json.loads(output)
+        for k in out.keys():
+            with open('{}.json'.format(k), 'w') as outfile:
+                json.dump(out[k], outfile, indent=4)
 
     click.echo(click.style(output, fg='green'))
 

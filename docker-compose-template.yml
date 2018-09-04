@@ -1,0 +1,62 @@
+#
+# Docker compose for ANALYTICS environment
+#
+version: '2'
+services:
+  dvc-analytics-admin:
+      image: <ADMIN>
+      container_name: dvc-analytics-admin
+      environment:
+        - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+        - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+        - SPRING_DATASOURCE_URL=${DB_URL}
+        - JAVA_OPTIONS=-Xmx256m
+      restart: always
+      mem_limit: 512m
+
+  dvc-analytics-ingestion:
+      image: <INGESTION>
+      container_name: dvc-analytics-ingestion
+      environment:
+        - JAVA_OPTIONS=-Xmx1024m
+        - HBASE_HOST=${HBASE_HOST}
+        - SINGLEINSTANCE=true
+        - EVENT_STREAM_NAME=${EVENT_STREAM_NAME}
+        - DATA_STREAM_NAME=${DATA_STREAM_NAME}
+      depends_on:
+        - dvc-analytics-admin
+      restart: always
+      mem_limit: 1g
+
+  dvc-analytics-search:
+      image: <SEARCH>
+      container_name: dvc-analytics-search
+      environment:
+        - JAVA_OPTIONS=-Xmx256m
+        - ADMIN_URL=http://dvc-analytics-admin:8080/admin
+        - HBASE_HOST=${HBASE_HOST}
+      restart: always
+      mem_limit: 256m
+
+  dvc-analytics-task:
+      image: <TASK>
+      container_name: dvc-analytics-task
+      environment:
+        - JAVA_OPTIONS=-Xmx256m
+        - DATASOURCE_USERNAME=${DB_USERNAME}
+        - DATASOURCE_PASSWORD=${DB_PASSWORD}
+        - DATASOURCE_URL=${DB_URL}
+        - ADMIN_URL=http://dvc-analytics-admin:8080/admin
+        - HBASE_HOST=${HBASE_HOST}
+        - HDFS_HOST=${HDFS_HOST}
+        - HDFS_PORT=${HDFS_PORT}
+      depends_on:
+        - dvc-analytics-admin
+      restart: always
+      mem_limit: 256m
+
+  dvc-analytics-webgui:
+      image: <WEBGUI>
+      container_name: dvc-analytics-webgui
+      restart: always
+      mem_limit: 64m

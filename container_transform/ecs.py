@@ -90,11 +90,13 @@ class ECSTransformer(BaseTransformer):
         :rtype: str
         """
         containers = sorted(containers, key=lambda c: c.get('name'))
-        task_definition = {
-            'family': self.family,
-            'containerDefinitions': containers,
-            'volumes': self.volumes or []
-        }
+        task_definition = {}
+        for container in containers:
+            task_definition[container['name']] = {
+                'family': container['name'],
+                'containerDefinitions': container,
+                'volumes': self.volumes or []
+            }
         if verbose:
             return json.dumps(task_definition, indent=4, sort_keys=True)
         else:

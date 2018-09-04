@@ -12,6 +12,7 @@ class ClientTests(TestCase):
     """
     Tests for client
     """
+
     def setUp(self):
         self.yaml_input = (
             '\n'
@@ -350,3 +351,15 @@ class ClientTests(TestCase):
             result.output,
             service_contents
         )
+
+    def test_prompt_compose_to_ecs_multiple_quiet(self):
+        self.maxDiff = None
+        runner = CliRunner()
+
+        input_file = './docker-compose-template.yml'
+
+        result = runner.invoke(
+            transform,
+            [input_file, '-i', 'compose', '-o', 'ecs'])
+        print(result)
+        assert result.exit_code == 0

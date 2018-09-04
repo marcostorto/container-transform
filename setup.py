@@ -42,7 +42,7 @@ extras_require['all'] = list(everything)
 
 
 setup(
-    name='container-transform',
+    name='container-transform-tp',
     version=get_version(),
     description='A converter for various docker cluster formats',
     long_description=open('README.rst').read(),

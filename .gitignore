@@ -37,3 +37,6 @@ docs/_build/
 # testing files
 /fig.yml
 /task.json
+*.json
+nosetests.xml
+*.iml

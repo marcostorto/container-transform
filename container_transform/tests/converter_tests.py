@@ -68,6 +68,20 @@ class ConverterTests(TestCase):
         output_want = json.load(open(output_filename, 'r'))
         self.assertDictEqual(output_dict, output_want)
 
+    def test_compose_converter_v2a_to_ecs(self):
+        self.maxDiff = None
+
+        filename = './container_transform/tests/docker-compose-template.yml'
+        output_filename = './container_transform/tests/docker-compose-template-output.json'
+        conv = Converter(filename, 'compose', 'ecs')
+
+        output = conv.convert()
+        print(output)
+        output_dict = json.loads(output)
+
+        output_want = json.load(open(output_filename, 'r'))
+        self.assertDictEqual(output_dict, output_want)
+
     def test_compose_converter_v2_systemd(self):
         self.maxDiff = None
 
